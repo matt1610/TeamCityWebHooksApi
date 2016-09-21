@@ -2,36 +2,33 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Net.Http;
+using System.Net;
 using System.Text;
 using System.Web;
+using Newtonsoft.Json;
 using TcWebHooks.Models;
-using System.Web.Http;
 
 namespace TcWebHooks.Shared
 {
-    public static class Utilities
+    public class Utilities
     {
-        public static string WriteToDebugLogFile(this string message, HttpRequestMessage request)
+        public void MakeWebRequest(string url, DeviceUpdate deviceUpdate)
         {
-            string requestBody = string.Empty;
+            var httpWebRequest = (HttpWebRequest)WebRequest.Create(url);
+            httpWebRequest.ContentType = "application/json";
+            httpWebRequest.Method = "POST";
 
-            using (var stream = new MemoryStream())
+            using (var streamWriter = new StreamWriter(httpWebRequest.GetRequestStream()))
             {
-                var context = (HttpContextBase)request.Properties["MS_HttpContext"];
-                context.Request.InputStream.Seek(0, SeekOrigin.Begin);
-                context.Request.InputStream.CopyTo(stream);
-                requestBody = Encoding.UTF8.GetString(stream.ToArray());
+                string json = JsonConvert.SerializeObject(deviceUpdate);
+                streamWriter.Write(json);
             }
 
-            string docPath = @"C:\Users\matthews\Documents";
-
-            using (StreamWriter outputFile = new StreamWriter(docPath + @"\MyAppsLogs\WriteLines.txt", true))
+            var httpResponse = (HttpWebResponse)httpWebRequest.GetResponse();
+            using (var streamReader = new StreamReader(httpResponse.GetResponseStream()))
             {
-                outputFile.WriteLine("{0} : {1}", "Body", requestBody);
+                var result = streamReader.ReadToEnd();
             }
-
-            return message;
         }
     }
 }
