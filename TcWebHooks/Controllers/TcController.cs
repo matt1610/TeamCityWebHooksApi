@@ -15,6 +15,7 @@ namespace TcWebHooks.Controllers
 {
     public class TcController : ApiController
     {
+        private TcWebHooksContext db = new TcWebHooksContext();
         public Utilities Utilities = new Utilities();
         // GET api/values
         public IEnumerable<string> Get()
@@ -39,23 +40,20 @@ namespace TcWebHooks.Controllers
         [HttpPost]
         public bool TcUpdate([FromBody]TcHttpModel req)
         {
-            List<string> buildMonitorIpAddressesList = ConfigurationManager.AppSettings[req.build.buildName].Split(',').Select(s => s.Trim()).ToList();
+            List<Device> devicesList = db.DeviceModels.ToList();
 
-            foreach (string ip in buildMonitorIpAddressesList)
+            foreach (Device device in devicesList)
             {
-                List<string> subscribedBranches = ConfigurationManager.AppSettings[ip].Split(',').Select(s => s.Trim()).ToList();
-                if (subscribedBranches.Contains(req.build.branchName))
+                if (device.SubscribedBranches.Contains(req.build.branchName))
                 {
                     bool result = req.build.buildResult == "success";
                     DeviceUpdate deviceUpdateMessage = new DeviceUpdate(req.build.buildName, req.build.notifyType, result, req.build.branchName);
-                    Utilities.MakeWebRequest(ip, deviceUpdateMessage);
+                    Utilities.MakeWebRequestToDevice(device.IpAddress, deviceUpdateMessage);
                 }
             }
+
             return true;
-        }   
-
-
-
+        }
 
     }
 }

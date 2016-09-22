@@ -12,9 +12,9 @@ namespace TcWebHooks.Shared
 {
     public class Utilities
     {
-        public void MakeWebRequest(string url, DeviceUpdate deviceUpdate)
+        public void MakeWebRequestToDevice(string url, DeviceUpdate deviceUpdate)
         {
-            var httpWebRequest = (HttpWebRequest)WebRequest.Create(url);
+            var httpWebRequest = (HttpWebRequest)WebRequest.Create( String.Format("{0}/Update", url) );
             httpWebRequest.ContentType = "application/json";
             httpWebRequest.Method = "POST";
 
