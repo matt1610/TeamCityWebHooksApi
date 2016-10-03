@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
 using TcWebHooks.Models;
+using TcWebHooks.Shared;
 
 namespace TcWebHooks.Controllers
 {
@@ -71,10 +72,14 @@ namespace TcWebHooks.Controllers
             return StatusCode(HttpStatusCode.NoContent);
         }
 
-        // POST: api/Devices
+        // POST: api/Tc/RegisterDevice
+        [Route("api/Tc/RegisterDevice")]
         [ResponseType(typeof(Device))]
         public async Task<IHttpActionResult> PostDevice(Device device)
         {
+            string str = String.Empty;
+            str.WriteToDebugLogFile(Request);
+
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);

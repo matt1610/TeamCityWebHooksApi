@@ -9,6 +9,7 @@ namespace TcWebHooks.Models
     public class Device
     {
         public string DeviceName { get; set; }
+        public string ChipId { get; set; }
         public int Id { get; set; }
         public string IpAddress { get; set; }
         public virtual PersistableStringCollection SubscribedBranches { get; set; }
