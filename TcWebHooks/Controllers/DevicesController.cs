@@ -78,7 +78,6 @@ namespace TcWebHooks.Controllers
         public async Task<IHttpActionResult> PostDevice(Device device)
         {
             string str = String.Empty;
-            str.WriteToDebugLogFile(Request);
 
             if (!ModelState.IsValid)
             {

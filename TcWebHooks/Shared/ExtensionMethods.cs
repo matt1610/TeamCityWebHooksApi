@@ -10,9 +10,9 @@ using System.Web.Http;
 
 namespace TcWebHooks.Shared
 {
-    public static class ExtensionMethods
+    public class ExtensionMethods
     {
-        public static string WriteToDebugLogFile(this string message, HttpRequestMessage request)
+        public void WriteToDebugLogFile(HttpRequestMessage request)
         {
             string requestBody = string.Empty;
 
@@ -30,8 +30,16 @@ namespace TcWebHooks.Shared
             {
                 outputFile.WriteLine("{0} : {1}", "Body", requestBody);
             }
+        }
 
-            return message;
+        public void WriteStringToFile(string message)
+        {
+            string docPath = @"C:\Users\matthews\Documents";
+
+            using (StreamWriter outputFile = new StreamWriter(docPath + @"\MyAppsLogs\WriteLines.txt", true))
+            {
+                outputFile.WriteLine("{0} : {1}", "Result", message);
+            }
         }
     }
 }
